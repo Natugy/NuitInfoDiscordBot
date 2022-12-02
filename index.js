@@ -2,8 +2,10 @@ const { Client, GatewayIntentBits,SlashCommandBuilder, TimestampStyles } = requi
 
 require("dotenv").config();
 
-const addMessage = require("./commands/addMessage.js");
+const addMessage = require("./commands/addMessage");
 const readMessage =require("./commands/readMessage");
+const help = require("./commands/help");
+const play =require("./commands/play")
 
   
 const client = new Client({
@@ -18,15 +20,31 @@ client.on('ready', async () => {
     
     client.application.commands.create(addMessage.builder);
     client.application.commands.create(readMessage.builder);
+    client.application.commands.create(help.builder);
+    client.application.commands.create(play.builder);
+
     console.log(`Logged succesfully!`);
     
 });
 
 client.on("interactionCreate", async interaction =>  {
     if(interaction.isCommand()){
-        if(interaction.commandName ==="chat") addMessage.commande(interaction);
+        switch(interaction.commandName){
+            case "readchat":
+                readMessage.command(interaction);
+                break;
+            case "chat":
+                addMessage.command(interaction);
+                break;
+            case "help":
+                help.command(interaction);
+                break;
+            case "play":
+                play.command(interaction);
+                break;
 
-        if(interaction.commandName === "readchat") readMessage.command(interaction);
+            
+        }
     }
 });
 
