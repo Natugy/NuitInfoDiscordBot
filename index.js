@@ -5,12 +5,12 @@ const { doc, getDoc, addDoc, collection, Timestamp, query,orderBy,limit, getDocs
 require("dotenv").config();
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCKGc0AICoewmGR1n-cnbUBxcY660O2-BM",
-    authDomain: "ndi-game-d9b14.firebaseapp.com",
-    projectId: "ndi-game-d9b14",
-    storageBucket: "ndi-game-d9b14.appspot.com",
-    messagingSenderId: "34549845840",
-    appId: "1:34549845840:web:d019c3556207d0ee926655"
+    apiKey: process.env.APP_KEY,
+    authDomain: process.env.AUTH_DOM,
+    projectId: process.env.PROJECT_ID,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING,
+    appId: process.env.APP_ID
 };
   
   // Initialize Firebase
@@ -77,7 +77,7 @@ client.on("interactionCreate", async interraction =>  {
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
-            console.log(author);
+            
         }
 
         if(interraction.commandName === "readchat"){
