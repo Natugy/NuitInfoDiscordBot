@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits,SlashCommandBuilder, TimestampStyles } = require('discord.js');
 const { initializeApp } = require("firebase/app");
 const { getFirestore } = require("firebase/firestore");
-const { doc, getDoc, addDoc, collection, Timestamp } = require("firebase/firestore"); 
+const { doc, getDoc, addDoc, collection, Timestamp, query,orderBy,limit, getDocs } = require("firebase/firestore"); 
 require("dotenv").config();
 
 const firebaseConfig = {
@@ -31,47 +31,36 @@ const client = new Client({
 });
 
 
-client.on('ready', async () => {
-    client.application.commands.create(data);
-    client.application.commands.create(addMessage);
-   // client.guilds.cache.get("1046876578803630131").commands.create(data);
-    console.log(`Logged succesfully!`);
-  /*  const docRef = doc(db,"test", "client");
-    const docSnap = await getDoc(docRef);
-    const dataDoc = docSnap.data();
-    console.log(dataDoc);*/
-});
-
-const data = new SlashCommandBuilder()
-    .setName("baste")
-    .setDescription("invoque notre dieu a tous")
-    .addUserOption(option =>
-         option
-         .setName("utilisateur")
-         .setDescription("fgfgfgf")
-         .setRequired(false)
-         );
-
 const addMessage = new SlashCommandBuilder()
-        .setName("chat")
-        .setDescription("Ajoute un message au chat")
-        .addStringOption(option =>
-            option
-            .setName("message")
-            .setDescription("Message a ajouté")
-            .setRequired(true));
-
-
+.setName("chat")
+.setDescription("Ajoute un message au chat")
+.addStringOption(option =>
+    option
+    .setName("message")
+    .setDescription("Texte à envoyer")
+    .setRequired(true));
+    
+    
+const readLastMessage = new SlashCommandBuilder()
+.setName("readchat")
+.setDescription("Lit les message du chat")
+.addIntegerOption(option => 
+    option
+        .setName("nbmessage")
+        .setDescription("Nombre de message que vous voulez afficher")
+        .setRequired(false)
+);
+client.on('ready', async () => {
+    
+    client.application.commands.create(addMessage);
+    client.application.commands.create(readLastMessage);
+    console.log(`Logged succesfully!`);
+    
+});
 
 client.on("interactionCreate", async interraction =>  {
     if(interraction.isCommand()){
-        if(interraction.commandName === "baste"){
-            let user =interraction.options.getUser("utilisateur");
-            if(user != undefined){
-                interraction.reply("pong <@"+user.id+">");
-            }
-            interraction.reply("tu pense pouvoir invoquer notre dieu ? tu n'as pas ce genre de pouvoir");
-        }
+        
 
         if(interraction.commandName ==="chat"){
             let author = interraction.user.tag
@@ -88,8 +77,26 @@ client.on("interactionCreate", async interraction =>  {
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
-            
             console.log(author);
+        }
+
+        if(interraction.commandName === "readchat"){
+            let response = "";
+            let lim=10;
+            
+            if(interraction.options.getInteger("nbmessage") != undefined){
+                lim = interraction.options.getInteger("nbmessage");
+
+            }
+            const chatCol = collection(db,"chat");
+            const q = query(chatCol,orderBy("date","desc"),limit(lim));
+           const querySnap = await getDocs(q);
+           querySnap.forEach((doc) => {
+            response = doc.data().userTag + ": \"" + doc.data().content+"\" \n" + response;
+           });
+           interraction.reply(response);
+            
+
         }
     }
 });
