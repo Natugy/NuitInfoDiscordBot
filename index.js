@@ -5,14 +5,6 @@ require("dotenv").config();
 const addMessage = require("./commands/addMessage.js");
 const readMessage =require("./commands/readMessage");
 
-const firebaseConfig = {
-    apiKey: process.env.APP_KEY,
-    authDomain: process.env.AUTH_DOM,
-    projectId: process.env.PROJECT_ID,
-    storageBucket: process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MESSAGING,
-    appId: process.env.APP_ID
-};
   
 const client = new Client({
     intents : [
