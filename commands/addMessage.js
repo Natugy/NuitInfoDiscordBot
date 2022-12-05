@@ -23,7 +23,7 @@ const addMessage = new SlashCommandBuilder()
         .setRequired(true));
 
 
-module.exports.command = async function (interaction){
+module.exports.commande = async function (interaction){
      let author = interaction.user.tag;
      let message = interaction.options.getString("message");
      

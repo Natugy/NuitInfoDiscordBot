@@ -18,10 +18,7 @@ const client = new Client({
 
 client.on('ready', async () => {
     
-    client.application.commands.create(addMessage.builder);
-    client.application.commands.create(readMessage.builder);
-    client.application.commands.create(help.builder);
-    client.application.commands.create(play.builder);
+   
 
     console.log(`Logged succesfully!`);
     
